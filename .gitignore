@@ -1,0 +1,7 @@
+node_modules/
+.pnpm-store/
+.test-dsh/
+artifacts/
+preview/*.png
+
+.DS_Store

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>鲸鱼娘小汐 · 预览</title>
+<style>
+  html, body { height: 100%; margin: 0; }
+  body {
+    display: grid; place-items: center; overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 78% 8%, #d9f2ff 0, transparent 58%),
+      radial-gradient(100% 80% at 10% 100%, #e7e9ff 0, transparent 60%),
+      #f3f6fb;
+    color: #263252;
+  }
+  #stage { position: fixed; inset: 0; }
+  .hint {
+    position: fixed; left: 18px; top: 16px; z-index: 2;
+    font: 12px/1.5 ui-sans-serif, -apple-system, "PingFang SC", sans-serif;
+    color: #64708c; pointer-events: none;
+  }
+  .hint b { color: #22304f; font-weight: 600; }
+  @media (prefers-color-scheme: dark) {
+    html { color-scheme: dark; }
+    body { background: radial-gradient(120% 90% at 78% 8%, #1d2c4f 0, transparent 58%), #111725; color: #e8eeff; }
+    .hint { color: #95a2bd; }
+    .hint b { color: #e8eeff; }
+  }
+</style>
+</head>
+<body>
+  <div id="stage"></div>
+  <div class="hint"><b>鲸鱼娘小汐</b><br>拖拽 · 点击摸摸头 · 右键设置</div>
+  <script src="./preview.js"></script>
+</body>
+</html>

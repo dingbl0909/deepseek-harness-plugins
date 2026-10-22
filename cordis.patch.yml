@@ -1,0 +1,4 @@
+# Add our overlay to the composed DSH profile. Nothing official is replaced.
+- insert:
+    - id: whale-musume
+      name: dsh-plugin-whale-musume

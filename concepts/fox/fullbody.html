@@ -1,0 +1,27 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>全身立绘示例 C</title>
+<style>
+  html,body{height:100%;margin:0}body{display:grid;place-items:center;overflow:hidden;background:radial-gradient(80% 60% at 78% 18%,#ffe6f0 0,transparent 58%),radial-gradient(90% 70% at 18% 88%,#fff1dc 0,transparent 60%),#f6f1f7;font-family:ui-sans-serif,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+  .stage{position:relative;width:720px;height:900px}
+  .tag{position:absolute;left:34px;top:28px;color:#7b6470;font-size:12px;line-height:1.7;letter-spacing:.04em}.tag b{display:block;color:#3f2b36;font-size:16px;letter-spacing:.08em}.tag span{color:#b08d9d}
+  .pet{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:330px;text-align:center}
+  .wrap{position:relative;display:inline-block;animation:float 6s ease-in-out infinite}
+  .wrap img{display:block;width:330px;filter:drop-shadow(0 18px 22px #5b34532e)}
+  .ring{position:absolute;left:50%;top:60%;width:320px;height:320px;transform:translate(-50%,-50%);border-radius:50%;border:1px solid #7ee9f280;box-shadow:0 0 40px #7ee9f23d,inset 0 0 40px #7ee9f21f;animation:spin 26s linear infinite;pointer-events:none}
+  .ring::before{content:"";position:absolute;inset:22px;border-radius:50%;border:1px dashed #7ee9f266}
+  .ring::after{content:"";position:absolute;inset:48px;border-radius:50%;border:1px solid #ffd98f4d}
+  .bubble{position:relative;display:inline-block;margin-bottom:18px;padding:10px 15px;border-radius:16px 16px 16px 6px;background:#fffdfbee;color:#5d3d4b;font-size:13px;font-weight:550;box-shadow:0 10px 24px #7d4c6526,inset 0 0 0 .5px #ffffffcc}
+  .bubble::after{content:"";position:absolute;left:24px;bottom:-5px;width:10px;height:10px;background:inherit;border-radius:2px;transform:rotate(45deg)}
+  .caption{position:absolute;left:50%;top:calc(100% + 26px);transform:translateX(-50%);color:#8b7180;font-size:12px;letter-spacing:.08em;white-space:nowrap}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+</style></head><body><div class="stage">
+  <div class="tag"><b>示例 C · 全身立绘直出</b>使用第二张设定图的完整身体 · 抠白底 · 轻悬浮<span> 最保真 / 但 T-pose 不适合复杂动作</span></div>
+  <div class="pet">
+    <div class="bubble">灵珠准备好了…</div>
+    <div class="wrap">
+      <div class="ring"></div>
+      <img src="./ref2-pet.png" alt="狐娘全身立绘">
+    </div>
+    <div class="caption">T-pose 直出 · 可做悬浮 / 灵光 / 呼吸；手臂姿态是固定的</div>
+  </div>
+</div></body></html>

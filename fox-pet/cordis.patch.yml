@@ -1,0 +1,4 @@
+# Add the fox companion as its own overlay. Nothing official is replaced.
+- insert:
+    - id: fox-pet
+      name: dsh-plugin-fox-pet

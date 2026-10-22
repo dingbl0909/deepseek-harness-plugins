@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>狐娘小铃 · 预览</title>
+<style>
+  html, body { height: 100%; margin: 0; }
+  body {
+    display: grid; place-items: center; overflow: hidden;
+    background:
+      radial-gradient(80% 60% at 78% 14%, #ffe7f0 0, transparent 58%),
+      radial-gradient(90% 70% at 14% 90%, #fff3dc 0, transparent 60%),
+      #f7f2f7;
+    color: #4b3340;
+    font-family: ui-sans-serif, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  #stage { position: fixed; inset: 0; }
+  .hint { position: fixed; left: 18px; top: 16px; z-index: 2; font-size: 12px; line-height: 1.5; color: #8e7482; pointer-events: none; }
+  .hint b { color: #4b3340; font-weight: 600; }
+  @media (prefers-color-scheme: dark) {
+    html { color-scheme: dark; }
+    body { background: radial-gradient(80% 60% at 78% 14%, #3a2333 0, transparent 58%), radial-gradient(90% 70% at 14% 90%, #2e2430 0, transparent 60%), #161219; color: #f6e9f0; }
+    .hint { color: #b9a1ad; }
+    .hint b { color: #f6e9f0; }
+  }
+</style>
+</head>
+<body>
+  <div id="stage"></div>
+  <div class="hint"><b>狐娘小铃</b><br>拖拽 · 点击摸摸头 · 右键设置</div>
+  <script src="./preview.js"></script>
+</body>
+</html>

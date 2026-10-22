@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>狐娘桌宠 · 概念示例</title>
+<style>
+  :root { color-scheme: light; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    display: grid; place-items: center; overflow: hidden;
+    background:
+      radial-gradient(90% 70% at 78% 16%, #ffe9f2 0, transparent 60%),
+      radial-gradient(80% 70% at 16% 90%, #fff4e0 0, transparent 62%),
+      #f7f3f8;
+    font-family: ui-sans-serif, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .stage { position: relative; width: 720px; height: 900px; }
+  .tag {
+    position: absolute; left: 34px; top: 28px; color: #7b6470;
+    font-size: 12px; line-height: 1.7; letter-spacing: .04em;
+  }
+  .tag b { display: block; color: #3f2b36; font-size: 16px; letter-spacing: .08em; }
+  .tag span { color: #b08d9d; }
+
+  .pet { position: absolute; left: 50%; top: 52%; width: 330px; transform: translate(-50%, -50%); }
+  .art { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 16px 18px #6b3b5a1f); animation: float 5.6s ease-in-out infinite; }
+  .layer { transition: transform .6s cubic-bezier(.2,.9,.22,1.02); }
+  .explode .layer-tail { transform: translate(26px, -6px) rotate(5deg); }
+  .explode .layer-hair { transform: translate(-18px, -3px) rotate(-2deg); }
+  .explode .layer-body { transform: translate(0, 14px); }
+  .explode .layer-arms { transform: translate(-14px, 8px); }
+  .explode .layer-orb { transform: translate(8px, -16px); }
+  .explode .layer-head { transform: translate(0, -34px); }
+  .explode .art { animation-play-state: paused; }
+  .labels { opacity: 0; transition: opacity .3s .2s; }
+  .explode .labels { opacity: 1; }
+  .labels rect { fill: #fffdfbF2; stroke: #d98aa4; stroke-width: .7; }
+  .labels text { fill: #6d4352; font: 600 7.5px/1 ui-sans-serif, "PingFang SC", sans-serif; text-anchor: middle; letter-spacing: .05em; }
+
+  #hairBack { transform-box: view-box; transform-origin: 120px 76px; animation: hair 6.4s ease-in-out infinite; }
+  #tail { transform-box: view-box; transform-origin: 154px 262px; animation: tail 4.2s ease-in-out infinite; }
+  #body { transform-box: fill-box; transform-origin: 50% 100%; animation: breathe 4.6s ease-in-out infinite; }
+  #head { transform-box: view-box; transform-origin: 120px 170px; animation: head 6s ease-in-out infinite; }
+  #sleeves { transform-box: view-box; transform-origin: 120px 206px; animation: sleeves 5.4s ease-in-out infinite; }
+  .ear-l { transform-box: view-box; transform-origin: 70px 64px; animation: ear-l 4.8s ease-in-out infinite; }
+  .ear-r { transform-box: view-box; transform-origin: 170px 64px; animation: ear-r 5.2s ease-in-out infinite; }
+  .eye { transform-box: fill-box; transform-origin: center; animation: blink 6.2s infinite; }
+  .eye:nth-of-type(2) { animation-delay: .07s; }
+  .petals g { transform-box: fill-box; transform-origin: center; animation: petal 7s ease-in-out infinite; }
+  .petals g:nth-child(2) { animation-delay: -2.4s; animation-duration: 8.2s; }
+  .petals g:nth-child(3) { animation-delay: -4.8s; animation-duration: 6.4s; }
+  .petals g:nth-child(4) { animation-delay: -1.2s; animation-duration: 9s; }
+  .orb-glow { animation: orb 3.4s ease-in-out infinite; }
+  .orb-ring { opacity: 0; }
+  .pet[data-state="working"] .orb-glow { animation-duration: 1.5s; }
+  .pet[data-state="working"] .orb-ring { opacity: 1; animation: spin 9s linear infinite; transform-box: view-box; transform-origin: 120px 231px; }
+  .pet[data-state="working"] .art { animation: work 2.6s ease-in-out infinite; }
+  .pet[data-state="working"] .brows { display: none; }
+  .pet[data-state="working"] .brows-focus { display: block; }
+  .pet[data-state="working"] .mouth-smile { display: none; }
+  .pet[data-state="working"] .mouth-focus { display: block; }
+  .pet[data-state="working"] .orb-spark { opacity: 1; }
+  .pet[data-state="waiting"] #head { animation: tilt 2.8s ease-in-out infinite; }
+  .pet[data-state="waiting"] .ear-r { animation: ear-twitch 2.8s ease-in-out infinite; }
+  .pet[data-state="celebrate"] .art { animation: cheer .85s ease-in-out 4; }
+  .pet[data-state="celebrate"] .eyes-open { display: none; }
+  .pet[data-state="celebrate"] .eyes-closed { display: block; }
+  .pet[data-state="celebrate"] .mouth-smile { display: none; }
+  .pet[data-state="celebrate"] .mouth-grin { display: block; }
+  .pet[data-state="celebrate"] .sparkles { opacity: 1; animation: fade 1.2s ease-in-out infinite; }
+  .pet[data-state="celebrate"] .petals g { animation-duration: 2.4s; }
+  .pet[data-state="sleeping"] .eyes-open { display: none; }
+  .pet[data-state="sleeping"] .eyes-closed { display: block; }
+  .pet[data-state="sleeping"] .art { animation: sleep 6.4s ease-in-out infinite; }
+  .pet[data-state="sleeping"] .zzz { opacity: 1; }
+  .eyes-closed, .mouth-focus, .mouth-grin, .brows-focus, .zzz, .question { display: none; }
+  .pet[data-state="waiting"] .question { display: block; animation: pop 2.8s ease-in-out infinite; }
+  .sparkles { opacity: 0; }
+
+  .bubble {
+    position: absolute; left: 50%; top: 92px; transform: translateX(-50%);
+    padding: 10px 16px; border-radius: 16px 16px 16px 6px;
+    background: #fffdfbF4; color: #5d3d4b; font-size: 13px; font-weight: 550;
+    box-shadow: 0 10px 24px #7d4c6526, inset 0 0 0 .5px #ffffffcc; white-space: nowrap;
+  }
+  .bubble::after { content: ""; position: absolute; left: 26px; bottom: -5px; width: 10px; height: 10px; background: inherit; border-radius: 2px; transform: rotate(45deg); }
+
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+  @keyframes breathe { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(1.02); } }
+  @keyframes hair { 0%,100% { transform: rotate(-.7deg); } 50% { transform: rotate(1.1deg); } }
+  @keyframes tail { 0%,100% { transform: rotate(-2deg); } 50% { transform: rotate(3deg); } }
+  @keyframes head { 0%,100% { transform: rotate(-.5deg); } 50% { transform: rotate(.7deg); } }
+  @keyframes sleeves { 0%,100% { transform: rotate(0); } 50% { transform: rotate(1.1deg); } }
+  @keyframes ear-l { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-3deg); } }
+  @keyframes ear-r { 0%,100% { transform: rotate(0); } 50% { transform: rotate(3deg); } }
+  @keyframes ear-twitch { 0%,80%,100% { transform: rotate(0); } 86% { transform: rotate(-10deg); } 92% { transform: rotate(4deg); } }
+  @keyframes blink { 0%,92%,96%,100% { transform: scaleY(1); } 93.6%,94.6% { transform: scaleY(.06); } }
+  @keyframes petal { 0%,100% { transform: translate(0,0) rotate(0); opacity: .55; } 50% { transform: translate(6px,-14px) rotate(24deg); opacity: 1; } }
+  @keyframes orb { 0%,100% { opacity: .55; transform: scale(.94); } 50% { opacity: .95; transform: scale(1.06); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes work { 0%,100% { transform: translateY(0) rotate(-.3deg); } 50% { transform: translateY(-2px) rotate(.2deg); } }
+  @keyframes tilt { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(-7deg); } }
+  @keyframes pop { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+  @keyframes cheer { 0%,100% { transform: translateY(0) rotate(-2deg); } 40% { transform: translateY(-18px) rotate(3deg); } 70% { transform: translateY(-4px) rotate(-1deg); } }
+  @keyframes fade { 0%,100% { opacity: .4; } 50% { opacity: 1; } }
+  @keyframes sleep { 0%,100% { transform: translateY(0) scaleY(1); } 50% { transform: translateY(2px) scaleY(.995); } }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="tag"><b>示例 A · Q 版狐娘</b>狐耳 · 金发 · 粉白巫女服 · 红腰带 · 铃铛 · 灵珠<span> 2.5D 分层 / 可动 / 可分割</span></div>
+
+  <div class="pet" id="pet" data-state="idle">
+    <div class="bubble" id="bubble">今天也一起加油吧～</div>
+    <svg class="art" viewBox="0 0 240 320" role="img" aria-label="狐娘小铃">
+      <defs>
+        <linearGradient id="hairGrad" x1="0" y1="0" x2=".35" y2="1">
+          <stop offset="0" stop-color="#fffaf0"/><stop offset=".45" stop-color="#ffe49a"/><stop offset="1" stop-color="#e0ad55"/>
+        </linearGradient>
+        <linearGradient id="hairLight" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#fff8d8"/><stop offset="1" stop-color="#f0c25f"/>
+        </linearGradient>
+        <linearGradient id="earGrad" x1="0" y1="0" x2=".3" y2="1">
+          <stop offset="0" stop-color="#fffaf0"/><stop offset=".6" stop-color="#ffe09a"/><stop offset="1" stop-color="#dea64e"/>
+        </linearGradient>
+        <linearGradient id="skin" x1="0" y1="0" x2=".2" y2="1">
+          <stop offset="0" stop-color="#fff5ec"/><stop offset=".72" stop-color="#ffe3d6"/><stop offset="1" stop-color="#ffd2c2"/>
+        </linearGradient>
+        <linearGradient id="iris" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#b9fbff"/><stop offset=".35" stop-color="#62e2f6"/><stop offset=".72" stop-color="#318fdc"/><stop offset="1" stop-color="#1d3f9b"/>
+        </linearGradient>
+        <linearGradient id="kimono" x1="0" y1="0" x2=".2" y2="1">
+          <stop offset="0" stop-color="#ffe1eb"/><stop offset=".55" stop-color="#f6aec5"/><stop offset="1" stop-color="#df789d"/>
+        </linearGradient>
+        <linearGradient id="white" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fffdfd"/><stop offset="1" stop-color="#f5e3eb"/>
+        </linearGradient>
+        <linearGradient id="sleeve" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fffafa"/><stop offset=".55" stop-color="#ffe0ea"/><stop offset="1" stop-color="#f3b4ca"/>
+        </linearGradient>
+        <linearGradient id="red" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#d94c66"/><stop offset="1" stop-color="#8f1f39"/>
+        </linearGradient>
+        <linearGradient id="tailGrad" x1="0" y1="0" x2=".8" y2="1">
+          <stop offset="0" stop-color="#ffda9c"/><stop offset=".5" stop-color="#eead55"/><stop offset="1" stop-color="#c97a2f"/>
+        </linearGradient>
+        <radialGradient id="orb" cx=".38" cy=".3" r=".75">
+          <stop offset="0" stop-color="#eaffff"/><stop offset=".3" stop-color="#92f6ff"/><stop offset=".7" stop-color="#339ee8"/><stop offset="1" stop-color="#16459f"/>
+        </radialGradient>
+        <radialGradient id="blush" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#ff9aaa" stop-opacity=".7"/><stop offset="1" stop-color="#ff9aaa" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- ═ 尾巴 ═ -->
+      <g class="layer layer-tail">
+        <g id="tail">
+          <path d="M147 252 C169 272 197 271 213 249 C222 235 229 216 242 207 C252 200 263 207 261 218 C258 233 245 241 237 255 C225 277 197 292 172 285 C160 281 151 272 146 262 Z"
+            fill="url(#tailGrad)" stroke="#8a4a1e" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M253 205 C259 198 267 203 264 212 C260 224 249 231 241 237 C245 226 249 214 253 205 Z" fill="#fff8ee" stroke="#c99a6a" stroke-width=".8"/>
+          <path d="M157 262 C182 271 205 264 218 246" fill="none" stroke="#ffe2b0" stroke-width="1.7" opacity=".65" stroke-linecap="round"/>
+          <path d="M230 236 C238 230 246 227 253 227 M219 254 C227 248 235 245 242 244 M205 270 C212 266 219 263 225 262" fill="none" stroke="#b46828" stroke-width="1.1" opacity=".45" stroke-linecap="round"/>
+        </g>
+      </g>
+
+      <!-- ═ 后发 ═ -->
+      <g class="layer layer-hair">
+        <g id="hairBack">
+          <path d="M120 60 C89 60 65 82 63 117 C62 146 56 196 50 228 C47 243 58 251 68 245 C77 239 82 220 86 202 L91 238 C93 252 105 256 112 244 C116 236 117 222 118 208 L122 208 C123 222 124 236 128 244 C135 256 147 252 149 238 L154 202 C158 220 163 239 172 245 C182 251 193 243 190 228 C184 196 178 146 177 117 C175 82 151 60 120 60 Z"
+            fill="url(#hairGrad)" stroke="#8a4a1e" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M70 126 C64 164 58 208 53 238 M170 126 C176 164 182 208 187 238" fill="none" stroke="#fff6d6" stroke-width="2" opacity=".4" stroke-linecap="round"/>
+          <path d="M56 240 C63 244 70 240 74 232 M184 240 C177 244 170 240 166 232" fill="none" stroke="#fffbe8" stroke-width="1.4" opacity=".55" stroke-linecap="round"/>
+        </g>
+      </g>
+
+      <!-- ═ 身体 ═ -->
+      <g class="layer layer-body">
+        <g id="body">
+          <!-- neck -->
+          <path d="M110 170 L130 170 L132 198 C125 203 115 203 108 198 Z" fill="url(#skin)" stroke="#dda08f" stroke-width="1"/>
+          <path d="M110 177 C116 184 124 184 130 177 L130 191 C124 195 116 195 110 191 Z" fill="#f2b4a4" opacity=".45"/>
+
+          <!-- legs -->
+          <rect x="103" y="281" width="14" height="27" rx="7" fill="url(#skin)" stroke="#dda08f" stroke-width="1"/>
+          <rect x="123" y="281" width="14" height="27" rx="7" fill="url(#skin)" stroke="#dda08f" stroke-width="1"/>
+          <!-- bare feet -->
+          <path d="M98 307 C98 301 108 299 113 303 L117 312 C113 315 101 315 98 312 Z" fill="url(#skin)" stroke="#dda08f" stroke-width="1" stroke-linejoin="round"/>
+          <path d="M142 307 C142 301 132 299 127 303 L123 312 C127 315 139 315 142 312 Z" fill="url(#skin)" stroke="#dda08f" stroke-width="1" stroke-linejoin="round"/>
+          <path d="M102 299 C106 301 112 301 116 299 M124 299 C128 301 134 301 138 299" fill="none" stroke="#e8b24e" stroke-width="1.6"/>
+          <circle cx="109" cy="300" r="1.5" fill="#f7d27a"/><circle cx="131" cy="300" r="1.5" fill="#f7d27a"/>
+
+          <!-- kimono skirt -->
+          <path d="M95 251 L145 251 L155 281 C140 288 100 288 85 281 Z" fill="url(#white)" stroke="#c96c8a" stroke-width="1.1" stroke-linejoin="round"/>
+          <path d="M89 263 C105 270 135 270 151 263" fill="none" stroke="#f0a8c0" stroke-width="2.4" opacity=".95"/>
+          <path d="M87 279 C103 286 137 286 153 279" fill="none" stroke="#d98aa4" stroke-width="1.1" opacity=".8"/>
+          <path d="M104 253 L98 283 M120 253 L120 287 M136 253 L142 283" fill="none" stroke="#e7b2c5" stroke-width=".9" opacity=".8"/>
+
+          <!-- kimono torso -->
+          <path d="M92 197 C102 190 138 190 148 197 L151 241 C151 250 138 255 120 255 C102 255 89 250 89 241 Z"
+            fill="url(#kimono)" stroke="#b25d7c" stroke-width="1.2" stroke-linejoin="round"/>
+          <!-- white inner collar -->
+          <path d="M95 195 L120 224 L145 195 L151 204 L120 235 L89 204 Z" fill="url(#white)" stroke="#c96c8a" stroke-width="1"/>
+          <!-- pink collar bands -->
+          <path d="M93 197 L119 226 L109 234 L87 208 Z" fill="#f49cba"/>
+          <path d="M147 197 L121 226 L131 234 L153 208 Z" fill="#f49cba"/>
+          <path d="M95 196 L120 225 L145 196" fill="none" stroke="#b23a55" stroke-width="1.6"/>
+          <!-- small chest cord + bell -->
+          <path d="M112 219 Q120 224 128 219" fill="none" stroke="#c23b56" stroke-width="1.2"/>
+          <circle cx="120" cy="223" r="2" fill="#f6cf72" stroke="#a87522" stroke-width=".6"/>
+
+          <!-- obi -->
+          <rect x="93" y="241" width="54" height="16" rx="4" fill="url(#red)" stroke="#7b1930" stroke-width="1"/>
+          <path d="M120 241 V257" stroke="#f6cf72" stroke-width="2.2"/>
+          <path d="M96 245 H144 M96 253 H144" stroke="#f6cf72" stroke-width=".9" opacity=".7"/>
+          <path d="M105 241 L108 257 M135 241 L132 257" stroke="#f6cf72" stroke-width=".7" opacity=".4"/>
+          <!-- hanging sash -->
+          <path d="M112 255 L128 255 L133 303 L120 299 L107 303 Z" fill="url(#red)" stroke="#7b1930" stroke-width="1" stroke-linejoin="round"/>
+          <path d="M120 258 V300" stroke="#f6cf72" stroke-width="1" opacity=".8"/>
+          <path d="M116 266 L124 270 M116 278 L124 282 M116 290 L124 294" stroke="#f6cf72" stroke-width="1" opacity=".6"/>
+          <!-- bells -->
+          <g fill="#f6cf72" stroke="#a87522" stroke-width=".7">
+            <circle cx="95" cy="258" r="3.6"/><circle cx="145" cy="258" r="3.6"/><circle cx="120" cy="301" r="3.2"/>
+          </g>
+          <circle cx="95" cy="261" r="1" fill="#b07b22"/><circle cx="145" cy="261" r="1" fill="#b07b22"/><circle cx="120" cy="303" r=".9" fill="#b07b22"/>
+          <path d="M95 261 V268 M145 261 V268" stroke="#d3a23e" stroke-width=".8"/>
+        </g>
+      </g>
+
+      <!-- ═ 宽袖与手 ═ -->
+      <g class="layer layer-arms">
+        <g id="sleeves">
+          <!-- left sleeve -->
+          <path d="M96 200 C78 208 62 230 64 250 C65 261 75 265 85 256 C96 245 102 236 108 231 L107 207 Z"
+            fill="url(#sleeve)" stroke="#c96c8a" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M98 207 C84 217 73 234 74 247 C75 254 82 256 88 249 C96 239 102 231 107 227 L107 211 Z" fill="#fffafd" opacity=".65"/>
+          <path d="M65 249 C74 257 84 253 91 243" fill="none" stroke="#c23b56" stroke-width="2.2" opacity=".9"/>
+          <!-- right sleeve -->
+          <path d="M144 200 C162 208 178 230 176 250 C175 261 165 265 155 256 C144 245 138 236 132 231 L133 207 Z"
+            fill="url(#sleeve)" stroke="#c96c8a" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M142 207 C156 217 167 234 166 247 C165 254 158 256 152 249 C144 239 138 231 133 227 L133 211 Z" fill="#fffafd" opacity=".65"/>
+          <path d="M175 249 C166 257 156 253 149 243" fill="none" stroke="#c23b56" stroke-width="2.2" opacity=".9"/>
+          <!-- hands cupping the orb -->
+          <ellipse cx="106" cy="230" rx="6.2" ry="7.2" fill="url(#skin)" stroke="#dda08f" stroke-width=".9"/>
+          <ellipse cx="134" cy="230" rx="6.2" ry="7.2" fill="url(#skin)" stroke="#dda08f" stroke-width=".9"/>
+          <path d="M102 228 C104 233 108 234 110 230 M138 228 C136 233 132 234 130 230" fill="none" stroke="#e8a99a" stroke-width=".8" opacity=".7"/>
+        </g>
+      </g>
+
+      <!-- ═ 灵珠 ═ -->
+      <g class="layer layer-orb">
+        <g id="orb">
+          <circle cx="120" cy="221" r="23" fill="#8ff5ff" opacity=".2" filter="url(#softGlow)" class="orb-glow"/>
+          <circle cx="120" cy="221" r="15" fill="url(#orb)" stroke="#1b6a9c" stroke-width="1.1"/>
+          <circle cx="120" cy="221" r="11" fill="#c9fdff" opacity=".25"/>
+          <path d="M111 216 C116 209 126 208 131 214 C127 212 122 212 118 216 C114 220 113 226 116 231 C110 227 108 221 111 216 Z" fill="#e9ffff" opacity=".8"/>
+          <circle cx="115" cy="215" r="2.7" fill="#ffffff" opacity=".95"/>
+          <g class="orb-ring">
+            <circle cx="120" cy="221" r="20" fill="none" stroke="#bffbff" stroke-width=".8" stroke-dasharray="2 4" opacity=".85"/>
+            <path d="M120 199 L122 204 L127 206 L122 208 L120 213 L118 208 L113 206 L118 204 Z" fill="#d8ffff"/>
+          </g>
+          <g class="orb-spark" opacity="0">
+            <circle cx="141" cy="208" r="2" fill="#b8fbff"/><circle cx="99" cy="232" r="1.6" fill="#b8fbff"/>
+            <circle cx="134" cy="236" r="1.4" fill="#e8ffff"/>
+          </g>
+        </g>
+      </g>
+
+      <!-- ═ 头部 ═ -->
+      <g class="layer layer-head">
+        <g id="head">
+          <!-- ears -->
+          <g class="ear-l">
+            <path d="M60 80 L44 18 Q42 9 51 14 L101 64 Q105 68 97 73 Z"
+              fill="url(#earGrad)" stroke="#8a4a1e" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M65 71 L53 27 Q52 22 56 25 L92 61 Q95 64 89 67 Z" fill="#ffb0c4"/>
+            <path d="M45 20 Q43 13 49 16" fill="none" stroke="#fff8e2" stroke-width="2.4" opacity=".9" stroke-linecap="round"/>
+            <path d="M63 55 L78 65 M57 43 L71 53" stroke="#fff6d8" stroke-width="1" opacity=".4" stroke-linecap="round"/>
+          </g>
+          <g class="ear-r">
+            <path d="M180 80 L196 18 Q198 9 189 14 L139 64 Q135 68 143 73 Z"
+              fill="url(#earGrad)" stroke="#8a4a1e" stroke-width="1.2" stroke-linejoin="round"/>
+            <path d="M175 71 L187 27 Q188 22 184 25 L148 61 Q145 64 151 67 Z" fill="#ffb0c4"/>
+            <path d="M195 20 Q197 13 191 16" fill="none" stroke="#fff8e2" stroke-width="2.4" opacity=".9" stroke-linecap="round"/>
+            <path d="M177 55 L162 65 M183 43 L169 53" stroke="#fff6d8" stroke-width="1" opacity=".4" stroke-linecap="round"/>
+          </g>
+          <!-- face -->
+          <path d="M120 73 C88 73 64 93 63 125 C62 150 80 173 103 179 C110 181 130 181 137 179 C160 173 178 150 177 125 C176 93 152 73 120 73 Z"
+            fill="url(#skin)" stroke="#dda08f" stroke-width="1.1"/>
+          <ellipse cx="82" cy="153" rx="13" ry="6" fill="url(#blush)"/>
+          <ellipse cx="158" cy="153" rx="13" ry="6" fill="url(#blush)"/>
+          <path d="M77 151 L79 156 M83 150 L85 155 M89 151 L91 156 M153 151 L155 156 M159 150 L161 155 M165 151 L167 156"
+            stroke="#ff9aaa" stroke-width=".8" opacity=".5" stroke-linecap="round"/>
+
+          <!-- brows -->
+          <g class="brows">
+            <path d="M85 113 Q97 107 108 112" fill="none" stroke="#8b5a35" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M132 112 Q143 107 155 113" fill="none" stroke="#8b5a35" stroke-width="2.2" stroke-linecap="round"/>
+          </g>
+          <g class="brows-focus">
+            <path d="M85 110 Q96 112 108 117" fill="none" stroke="#7a4a2a" stroke-width="2.3" stroke-linecap="round"/>
+            <path d="M155 110 Q144 112 132 117" fill="none" stroke="#7a4a2a" stroke-width="2.3" stroke-linecap="round"/>
+          </g>
+
+          <!-- eyes -->
+          <g class="eyes-open">
+            <g class="eye">
+              <ellipse cx="97" cy="138" rx="15.5" ry="17" fill="#fffdfd" stroke="#4a3550" stroke-width=".7"/>
+              <ellipse cx="97" cy="139.5" rx="11.6" ry="14.4" fill="url(#iris)" stroke="#23406f" stroke-width=".8"/>
+              <ellipse cx="97" cy="141" rx="5.5" ry="8.6" fill="#101b3f"/>
+              <ellipse cx="97" cy="146.5" rx="8" ry="4.6" fill="#a8fbff" opacity=".5"/>
+              <circle cx="93" cy="133" r="4.1" fill="#fff"/>
+              <circle cx="101" cy="143" r="2" fill="#fff" opacity=".9"/>
+              <path d="M83 130 C87 119 96 114 105 117 C111 119 115 125 116 131" fill="none" stroke="#3a2635" stroke-width="3.3" stroke-linecap="round"/>
+              <path d="M114 126 L120 122" stroke="#3a2635" stroke-width="2.1" stroke-linecap="round"/>
+            </g>
+            <g class="eye">
+              <ellipse cx="143" cy="138" rx="15.5" ry="17" fill="#fffdfd" stroke="#4a3550" stroke-width=".7"/>
+              <ellipse cx="143" cy="139.5" rx="11.6" ry="14.4" fill="url(#iris)" stroke="#23406f" stroke-width=".8"/>
+              <ellipse cx="143" cy="141" rx="5.5" ry="8.6" fill="#101b3f"/>
+              <ellipse cx="143" cy="146.5" rx="8" ry="4.6" fill="#a8fbff" opacity=".5"/>
+              <circle cx="139" cy="133" r="4.1" fill="#fff"/>
+              <circle cx="147" cy="143" r="2" fill="#fff" opacity=".9"/>
+              <path d="M157 130 C153 119 144 114 135 117 C129 119 125 125 124 131" fill="none" stroke="#3a2635" stroke-width="3.3" stroke-linecap="round"/>
+              <path d="M126 126 L120 122" stroke="#3a2635" stroke-width="2.1" stroke-linecap="round"/>
+            </g>
+          </g>
+          <g class="eyes-closed">
+            <path d="M82 139 Q97 151 112 139" fill="none" stroke="#4a3540" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M128 139 Q143 151 158 139" fill="none" stroke="#4a3540" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M85 152 Q97 158 109 152" fill="none" stroke="#d89a8f" stroke-width="1" opacity=".4" stroke-linecap="round"/>
+            <path d="M131 152 Q143 158 155 152" fill="none" stroke="#d89a8f" stroke-width="1" opacity=".4" stroke-linecap="round"/>
+          </g>
+
+          <path d="M118 153 Q120 155 122 153" fill="none" stroke="#d89a8f" stroke-width="1.1" stroke-linecap="round"/>
+          <g class="mouth-smile"><path d="M113 162 Q120 169 127 162" fill="none" stroke="#b45460" stroke-width="2.1" stroke-linecap="round"/></g>
+          <g class="mouth-focus"><path d="M113 163 Q120 165 127 163" fill="none" stroke="#b45460" stroke-width="2.1" stroke-linecap="round"/></g>
+          <g class="mouth-grin"><path d="M111 160 Q120 172 129 160 Z" fill="#b45460" stroke="#8e3a49" stroke-width="1"/><path d="M114 163 Q120 167 126 163" fill="#ff8fa0"/></g>
+
+          <!-- front hair -->
+          <path d="M120 58 C88 58 63 81 61 118 C60 134 63 147 69 158 C72 144 74 131 80 121 C84 115 89 111 95 108 C98 119 104 127 111 131 C110 118 112 107 117 97 C121 110 127 118 134 122 C136 109 140 99 146 91 C148 105 153 116 160 122 C166 128 170 142 172 158 C178 147 181 134 179 118 C177 81 152 58 120 58 Z"
+            fill="url(#hairGrad)" stroke="#8a4a1e" stroke-width="1.2" stroke-linejoin="round"/>
+          <path d="M78 120 C84 134 94 144 106 149 M148 91 C150 108 157 122 167 132" fill="none" stroke="#fff2bf" stroke-width="1.6" opacity=".55" stroke-linecap="round"/>
+          <path d="M88 102 C93 95 99 90 106 87 M130 87 C137 91 142 98 146 106" fill="none" stroke="#fff8dc" stroke-width="1.2" opacity=".55" stroke-linecap="round"/>
+
+          <!-- side locks -->
+          <path d="M66 112 C61 136 62 158 67 177 C70 186 78 185 81 176 C84 161 82 140 80 128 Z"
+            fill="url(#hairGrad)" stroke="#8a4a1e" stroke-width="1.1" stroke-linejoin="round"/>
+          <path d="M174 112 C179 136 178 158 173 177 C170 186 162 185 159 176 C156 161 158 140 160 128 Z"
+            fill="url(#hairGrad)" stroke="#8a4a1e" stroke-width="1.1" stroke-linejoin="round"/>
+
+          <!-- ahoge -->
+          <path d="M116 60 C108 46 116 36 128 39 C140 42 142 55 133 59 C128 61 125 56 130 53"
+            fill="none" stroke="#8a4a1e" stroke-width="6.2" stroke-linecap="round"/>
+          <path d="M116 60 C108 46 116 36 128 39 C140 42 142 55 133 59 C128 61 125 56 130 53"
+            fill="none" stroke="url(#hairLight)" stroke-width="3.9" stroke-linecap="round"/>
+
+          <!-- gold bell hairpin -->
+          <g transform="translate(152 92)">
+            <path d="M0 0 C-5 -6 -4 -13 2 -13 C8 -13 9 -6 4 0 Z" fill="#f6cf72" stroke="#a87522" stroke-width=".8"/>
+            <circle cx="2" cy="1" r="1.3" fill="#b07b22"/>
+            <path d="M2 -13 V-17" stroke="#d3a23e" stroke-width="1"/>
+          </g>
+          <!-- sakura pin -->
+          <g transform="translate(70 88) rotate(-16)" fill="#ffc2d4" stroke="#d98aa4" stroke-width=".5">
+            <ellipse cx="0" cy="-4" rx="2.6" ry="4"/><ellipse cx="3.8" cy="-1.2" rx="2.6" ry="4" transform="rotate(72 3.8 -1.2)"/>
+            <ellipse cx="2.4" cy="3.4" rx="2.6" ry="4" transform="rotate(144 2.4 3.4)"/><ellipse cx="-2.4" cy="3.4" rx="2.6" ry="4" transform="rotate(216 -2.4 3.4)"/>
+            <ellipse cx="-3.8" cy="-1.2" rx="2.6" ry="4" transform="rotate(288 -3.8 -1.2)"/>
+            <circle cx="0" cy="0" r="1.8" fill="#fff0b8"/>
+          </g>
+        </g>
+      </g>
+
+      <!-- ═ 花瓣 / 特效 ═ -->
+      <g class="layer layer-fx">
+        <g class="petals" fill="#ffc4d5" stroke="#e79ab2" stroke-width=".4">
+          <g transform="translate(44 138)"><path d="M0 0 C-4 -3 -5 -8 -2 -10 C1 -12 4 -8 3 -4 C6 -7 10 -6 10 -2 C10 2 4 3 0 0 Z"/></g>
+          <g transform="translate(203 116)"><path d="M0 0 C-4 -3 -5 -8 -2 -10 C1 -12 4 -8 3 -4 C6 -7 10 -6 10 -2 C10 2 4 3 0 0 Z"/></g>
+          <g transform="translate(206 262)"><path d="M0 0 C-3 -2 -4 -6 -2 -8 C0 -10 3 -7 2 -3 C5 -5 8 -4 8 -1 C8 2 3 2 0 0 Z"/></g>
+          <g transform="translate(38 248)"><path d="M0 0 C-3 -2 -4 -6 -2 -8 C0 -10 3 -7 2 -3 C5 -5 8 -4 8 -1 C8 2 3 2 0 0 Z"/></g>
+        </g>
+        <g class="sparkles">
+          <path d="M52 96 L54 102 L60 104 L54 106 L52 112 L50 106 L44 104 L50 102 Z" fill="#ffd979"/>
+          <path d="M190 172 L192 177 L197 179 L192 181 L190 186 L188 181 L183 179 L188 177 Z" fill="#ffd979"/>
+          <path d="M182 56 L184 61 L189 63 L184 65 L182 70 L180 65 L175 63 L180 61 Z" fill="#b8fbff"/>
+        </g>
+        <g class="question">
+          <path d="M190 80 C190 70 206 69 206 80 C206 87 197 87 197 94" fill="none" stroke="#f0b64f" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="197" cy="103" r="3" fill="#f0b64f"/>
+        </g>
+        <g class="zzz">
+          <text x="184" y="84" fill="#c7b4e8" font-size="11" font-weight="700" font-family="ui-rounded, sans-serif">Z</text>
+          <text x="197" y="68" fill="#c7b4e8" font-size="9" font-weight="700" font-family="ui-rounded, sans-serif">z</text>
+          <text x="207" y="55" fill="#c7b4e8" font-size="7" font-weight="700" font-family="ui-rounded, sans-serif">z</text>
+        </g>
+      </g>
+
+      <!-- labels -->
+      <g class="labels" aria-hidden="true">
+        <g><rect x="4" y="104" width="34" height="15" rx="7.5"/><text x="21" y="115">后发</text><path d="M38 111 H56" stroke="#d98aa4" stroke-width=".8" stroke-dasharray="2 2"/></g>
+        <g><rect x="198" y="116" width="34" height="15" rx="7.5"/><text x="215" y="127">头部</text><path d="M198 123 H184" stroke="#d98aa4" stroke-width=".8" stroke-dasharray="2 2"/></g>
+        <g><rect x="4" y="240" width="34" height="15" rx="7.5"/><text x="21" y="251">身体</text><path d="M38 247 H68" stroke="#d98aa4" stroke-width=".8" stroke-dasharray="2 2"/></g>
+        <g><rect x="198" y="222" width="34" height="15" rx="7.5"/><text x="215" y="233">尾巴</text><path d="M198 229 H190" stroke="#d98aa4" stroke-width=".8" stroke-dasharray="2 2"/></g>
+        <g><rect x="198" y="272" width="34" height="15" rx="7.5"/><text x="215" y="283">灵珠</text><path d="M198 279 H164" stroke="#d98aa4" stroke-width=".8" stroke-dasharray="2 2"/></g>
+      </g>
+    </svg>
+  </div>
+</div>
+<script>
+  const params = new URLSearchParams(location.search);
+  const pet = document.getElementById('pet');
+  pet.dataset.state = params.get('state') || 'idle';
+  if (params.get('explode') === '1') pet.classList.add('explode');
+  if (params.get('bubble')) document.getElementById('bubble').textContent = params.get('bubble');
+  if (params.get('nobubble') === '1') document.getElementById('bubble').style.display = 'none';
+</script>
+</body>
+</html>

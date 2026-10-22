@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#33468f"/>
+      <stop offset="1" stop-color="#141e49"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#b6fbff"/>
+      <stop offset="0.55" stop-color="#5bdcee"/>
+      <stop offset="1" stop-color="#238ab9"/>
+    </linearGradient>
+    <linearGradient id="fin" x1="0" y1="0" x2="1" y2="0.8">
+      <stop offset="0" stop-color="#7ceef8"/>
+      <stop offset="1" stop-color="#1f7ea8"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="30" fill="url(#bg)"/>
+  <circle cx="26" cy="96" r="3" fill="#8cecf8" opacity="0.4"/>
+  <circle cx="110" cy="32" r="2.6" fill="#ffffff" opacity="0.35"/>
+  <circle cx="104" cy="98" r="4.2" fill="#8cecf8" opacity="0.28"/>
+
+  <!-- whale body -->
+  <path d="M18 74 C18 52 36 37 61 37 C85 37 102 51 104 69 C104 82 91 91 75 91 L43 91 C29 91 18 85 18 74 Z"
+        fill="url(#body)" stroke="#0d4b63" stroke-width="3" stroke-linejoin="round"/>
+  <!-- tail -->
+  <path d="M99 64 C106 54 117 50 123 56 C128 61 125 70 116 74 C109 77 102 75 99 70 Z"
+        fill="url(#fin)" stroke="#0d4b63" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M100 74 C106 82 116 86 122 81 C127 77 124 70 116 68"
+        fill="url(#fin)" stroke="#0d4b63" stroke-width="3" stroke-linejoin="round"/>
+  <!-- belly -->
+  <path d="M30 78 C42 88 77 88 92 77 C88 86 76 91 61 91 L43 91 C35 91 30 85 30 78 Z" fill="#e9feff" opacity="0.42"/>
+  <!-- eye + smile -->
+  <circle cx="43" cy="63" r="4.2" fill="#0b2740"/>
+  <circle cx="41.8" cy="61.6" r="1.5" fill="#ffffff"/>
+  <path d="M49 72 Q55 77 61 72" fill="none" stroke="#0b4b63" stroke-width="2.4" stroke-linecap="round"/>
+  <!-- spout -->
+  <path d="M48 33 C45 24 48 17 55 14" fill="none" stroke="#c9fdff" stroke-width="3.2" stroke-linecap="round" opacity="0.9"/>
+  <circle cx="42" cy="22" r="2.4" fill="#9ef6ff" opacity="0.8"/>
+  <circle cx="58" cy="10" r="2" fill="#9ef6ff" opacity="0.7"/>
+  <!-- little heart bubble -->
+  <path d="M94 24 C94 19 100 18 102 22 C104 18 110 19 110 24 C110 30 102 34 102 34 C102 34 94 30 94 24 Z" fill="#ff9fb4" opacity="0.95"/>
+</svg>
